@@ -11,7 +11,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
     public class UserDaoTest {
     @Test
     public void get() throws SQLException, ClassNotFoundException {
-        UserDao userDao = new UserDao();
+        //UserDao userDao = new UserDao(new SimpleConnectionMaker());
+
+        UserDao userDao = new DaoFactory().getUserDao(); // 의존성을 dependency를 던져줌
 
         Long id = 1L;
         String name = "허윤호";
@@ -23,9 +25,30 @@ import static org.hamcrest.MatcherAssert.assertThat;
         assertThat(user.getName(), is(name));
         assertThat(user.getPassword(), is(password));
 
-
     }
 
+    @Test
+    public void add() throws SQLException, ClassNotFoundException {
+        User user = new User();
+
+        String name= "헐크";
+        String passward = "2222";
+
+        user.setName(name);
+        user.setPassword(passward);
+
+        //UserDao userDao = new UserDao();
+
+        UserDao userDao = new DaoFactory().getUserDao(); // 의존성을 dependency를 던져줌
+
+        Long id = userDao.add(user);
+
+        User resultUser = userDao.get(id);
+
+        assertThat(resultUser.getId(), is(id) );
+        assertThat(resultUser.getName(), is(name) );
+        assertThat(resultUser.getPassword(), is(passward) );
+    }
 
 
 
