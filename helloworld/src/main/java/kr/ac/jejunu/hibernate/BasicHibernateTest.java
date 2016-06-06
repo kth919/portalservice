@@ -1,5 +1,6 @@
 package kr.ac.jejunu.hibernate;
 
+import kr.ac.jejunu.model.Comment;
 import kr.ac.jejunu.model.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -25,9 +26,16 @@ import static org.hamcrest.core.Is.is;
 
                  @Before
          public void setup() {
-                 Configuration configuration = new Configuration().configure("jejunu.cfg.xml");
-                 configuration.addResource("User.hbm.xml");
-                 StandardServiceRegistryBuilder sb = new StandardServiceRegistryBuilder();
+                 /*Configuration configuration = new Configuration().configure("jejunu.cfg.xml");
+
+                              Configuration configuration = new Configuration().configure("jejunu.cfg.xml")
+                                              .addAnnotatedClass(User.class)
+                                              .addAnnotatedClass(Comment.class);
+                      //        configuration.addResource("User.hbm.xml");
+                              //        configuration.addResource("Comment.hbm.xml");
+
+
+                                     StandardServiceRegistryBuilder sb = new StandardServiceRegistryBuilder();
                  sb.applySettings(configuration.getProperties());
                  StandardServiceRegistry standardServiceRegistry = sb.build();
                  sessionFactory = configuration.buildSessionFactory(standardServiceRegistry);
@@ -44,6 +52,10 @@ import static org.hamcrest.core.Is.is;
                  User user = session.get(User.class, 1);
                  assertThat(user.getName(), is("허윤호"));
                  assertThat(user.getPassword(), is("1234"));
+                     user.getComments().forEach(comment->{
+                        logger.error(comment.getContent());
+                       });
+
                      session.close();
              }
 

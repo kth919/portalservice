@@ -1,7 +1,27 @@
  <?xml version="1.0" encoding="UTF-8"?>
-         <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
-                 "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
-         <hibernate-configuration>
+         <hibernate-mapping package="kr.ac.jejunu.model">
+          <class name="User" table="userinfo">
+              <id name="id" type="java.lang.Integer">
+                  <column name="id" />
+<!--
+                    <generator class="native" />
+-->
+                 <generator class="identity" />
+
+              </id>
+              <property name="name" type="java.lang.String">
+                  <column name="name" />
+              </property>
+
+                  <property name="password" type="java.lang.String">
+                      <column name="password" />
+                  </property>
+                           <bag name="comments">
+                               <key column="userinfo_id"/>
+                               <one-to-many class="Comment"/>
+                           </bag>
+                    </class>
+                  <hibernate-configuration>
          <session-factory >
              <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
             <property name="hibernate.connection.password">jejupw</property>
