@@ -14,15 +14,13 @@ import java.util.List;
          @Id
          @GeneratedValue
 
-                 private Integer id;
+         private Integer id;
          private String name;
          private String password;
+    //    @JoinColumn(name = "userinfo_id")
+             //    @OneToMany
+             //    private List<Comment> comments;
 
-         @JoinColumn(name = "userinfo_id")
-         @OneToMany
-
-
-    private List<Comment> comments;
 
                public Integer getId() {
                 return id;
@@ -49,13 +47,13 @@ import java.util.List;
              }
 
 
-                 public List<Comment> getComments() {
-                 return comments;
-             }
-
-                 public void setComments(List<Comment> comments) {
-                 this.comments = comments;
-             }
+//                 public List<Comment> getComments() {
+//                 return comments;
+//             }
+//
+//                 public void setComments(List<Comment> comments) {
+//                 this.comments = comments;
+//             }
 
 }
 

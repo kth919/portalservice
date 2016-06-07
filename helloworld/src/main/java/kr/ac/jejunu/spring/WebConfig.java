@@ -1,18 +1,33 @@
 package kr.ac.jejunu.spring;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.oxm.castor.CastorMarshaller;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import org.springframework.web.servlet.view.xml.MarshallingView;
 import org.springframework.web.util.UrlPathHelper;
 
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
+import java.util.Properties;
+
 /**
  * Created by admin on 2016-05-20.
  */
 @Configuration
-@ComponentScan(basePackages = "kr.ac.jejunu.spring")
+ @ComponentScan(basePackages = "kr.ac.jejunu")
+ @EnableJpaRepositories(basePackages = "kr.ac.jejunu.repository", entityManagerFactoryRef="entityManagerFactoryBean")
 @EnableWebMvc
 public class WebConfig extends WebMvcConfigurerAdapter{
 
@@ -28,6 +43,11 @@ public class WebConfig extends WebMvcConfigurerAdapter{
         }
 
     }
+    @Override
+         public void addResourceHandlers(ResourceHandlerRegistry registry) {
+                 registry.addResourceHandler("/resources/**").addResourceLocations("/WEB-INF/views/spring/resources/");
+             }
+
 
     @Override
     public void addInterceptors(InterceptorRegistry registry){
@@ -43,5 +63,44 @@ public class WebConfig extends WebMvcConfigurerAdapter{
         registry.jsp().prefix("/WEB-INF/views/");
 
     }
+        @Bean
+        public MultipartResolver multipartResolver() {
+                return new CommonsMultipartResolver();
+           }
+
+         @Bean
+         public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean() {
+                 LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+                 em.setDataSource(dataSource());
+                 em.setPackagesToScan("kr.ac.jejunu.model");
+
+                         Properties properties = new Properties();
+                 properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+
+                         JpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
+                 em.setJpaVendorAdapter(jpaVendorAdapter);
+                 em.setJpaProperties(properties);
+                 return em;
+             }
+
+                 @Bean
+         public DataSource dataSource() {
+                 DriverManagerDataSource dataSource = new DriverManagerDataSource();
+
+                         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+                 dataSource.setUrl("jdbc:mysql://localhost:3306/jeju?characterEncoding=utf-8");
+                 dataSource.setUsername("jeju");
+                 dataSource.setPassword("jejupw");
+
+                         return dataSource;
+             }
+
+                 @Bean
+         public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
+                 JpaTransactionManager transactionManager = new JpaTransactionManager();
+                 transactionManager.setEntityManagerFactory(emf);
+                 return transactionManager;
+             }
+
 
 }
